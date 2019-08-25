@@ -1,20 +1,12 @@
 <template>
     <nav>
-        <v-app-bar app clipped-left>
-            <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-            <v-toolbar-title class="text-uppercase ">
+        <v-app-bar app clipped-left class="px-4">
+            <v-toolbar-title class="text-uppercase px-4">
                 <v-icon class="grey--text">mdi-cloud</v-icon>
-                <span class="mx-1">Cloudy</span>
+                <span class="mx-1 text-capitalize">Cloudy</span>
             </v-toolbar-title>
             <v-spacer />
-            <v-btn text @click="dialog = true">
-                <span>Sign in</span>
-                <v-icon right class="grey--text">fa-user-circle</v-icon>
-            </v-btn>
-        </v-app-bar>
-
-        <v-navigation-drawer app clipped v-model="drawer">
-            <v-list>
+            <!-- <v-list v-if="getUser !== null">
                 <v-list-item v-for="{icon, text, route} in links" :key="text" router :to="route">
                     <v-list-item-action>
                         <v-icon>{{icon}}</v-icon>
@@ -23,8 +15,19 @@
                         <v-list-item-title>{{text}}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-            </v-list>
-        </v-navigation-drawer>
+            </v-list> -->
+            <template v-if="getUser !== null">
+                <v-btn text v-for="{icon, text, route} in links" :key="text" router :to="route">
+                    <v-icon right class="grey--text">{{ icon }}</v-icon>
+                    <span class="mx-2">{{ text }}</span>
+                </v-btn>
+            </template>
+
+            <v-btn text @click="dialog = true" v-if="getUser === null">
+                <v-icon right class="grey--text">fa-user-circle</v-icon>
+                <span class="mx-2">Sign in</span>
+            </v-btn>
+        </v-app-bar>
 
         <v-dialog v-model="dialog" max-width="600px">
             <v-card v-if="form">
@@ -36,15 +39,18 @@
                         <v-container>
                             <v-row>
                                 <v-col cols="12">
-                                    <v-text-field label="Email" type="email" required v-model="email"></v-text-field>
+                                    <v-text-field label="Email" type="email" :rules="signInRules" required v-model="email"></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field label="Password" type="password" required v-model="password"></v-text-field>
+                                    <v-text-field label="Password" type="password" :rules="signInRules" required v-model="password"></v-text-field>
+                                </v-col>
+                                <v-col cols="12">
+                                    <a @click="changeForm">Don't have account? Sign up now!</a>
                                 </v-col>
                             </v-row>
                         </v-container>
                     </v-card-text>
-                    <v-card-actions>
+                    <v-card-actions class="pb-3 pr-3">
                     <div class="flex-grow-1"></div>
                     <v-btn color="blue darken-1" text @click="validateSignin" :disabled="!validSignIn">Sign In</v-btn>
                     </v-card-actions>
@@ -70,7 +76,7 @@
                             </v-row>
                         </v-container>
                     </v-card-text>
-                    <v-card-actions>
+                    <v-card-actions class="pb-3 pr-3">
                     <div class="flex-grow-1"></div>
                     <v-btn color="blue darken-1" text @click="validateSignup" :disabled="!validSignUp">Sign up</v-btn>
                     </v-card-actions>
@@ -89,9 +95,8 @@ export default {
         dialog: false,
         form: true,
         links: [
-            {icon: 'mdi-poll', text: 'Placeholder', route: '/dashboard'},
-            {icon: 'mdi-poll', text: 'Placeholder2', route: '/projects'},
-            {icon: 'mdi-poll', text: 'Placeholder3', route: '/team'},
+            {icon: 'fa-sun', text: 'Forecast', route: '/'},
+            {icon: 'fa-chart-line', text: 'Dashboard', route: '/dashboard'},
         ],
         email: '',
         password: '',
@@ -112,19 +117,27 @@ export default {
                 const pattern = /((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/
                 return pattern.test(value) || 'Password too weak (At least 1 uppercase letter and at least 1 number or special character)'
             }
+        ],
+        signInRules: [
+            value => !!value || 'Required',
         ]
     }),
     methods: {
         async validateSignin() {
             if (this.$refs.signIn.validate()) {
                 await this.$store.dispatch('signinUser', { email: this.email, password: this.password })
-                console.log(this.getUser);
+                this.dialog = false;
             }
         },
         async validateSignup() {
             if (this.$refs.signUp.validate()) {
                 await this.$store.dispatch('createUser', { email: this.email, password: this.password })
+                this.dialog = false;
+                this.form = true
             }
+        },
+        changeForm() {
+            this.form = false
         }
     },
     computed: {
@@ -133,6 +146,11 @@ export default {
         },
         getUser() {
             return this.$store.state.user;
+        },
+    },
+    beforeUpdate() {
+        if (this.dialog !== true) {
+            this.form = true;
         }
     }
 };

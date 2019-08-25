@@ -16,5 +16,10 @@ export default new Router({
       name: 'forecast',
       component: () => import('./views/Forecast.vue'),
     },
+    {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: () => import('./views/Dashboard.vue'),
+    },
   ],
 });

@@ -83,14 +83,18 @@ export default {
     weatherData: [],
     currentWeather: null,
     cardsData: [
-      {main: 'Clear', card: [ {id: 800, img: clear} ]},
+      {
+        main: 'Clear', 
+        card: [ 
+          {id: 800, img: clear}, 
+        ]},
       {
         main: 'Clouds', 
         card: [ 
-        {id: 801, img: clouds}, 
-        {id: 802, img: scatteredClouds}, 
-        {id: 803, img: brokenClouds}, 
-        {id: 804, img: brokenClouds} 
+          {id: 801, img: clouds}, 
+          {id: 802, img: scatteredClouds}, 
+          {id: 803, img: brokenClouds}, 
+          {id: 804, img: brokenClouds} ,
       ]},
       {
         main: 'Atmosphere', 
@@ -180,6 +184,8 @@ export default {
       try { 
         await this.$store.dispatch('getForecast');
         const tempData = this.$store.state.weather.forecast.data.list;
+        const tempCurrentData = this.$store.state.weather.currentWeather.data;
+        let currentImg;
 
         let dates = new Array();
         const checkTime = tempData[0].dt_txt.split(' ')[1];
@@ -209,11 +215,18 @@ export default {
             });
           }
         });
+
+        this.cardsData.forEach(obj => {
+            obj.card.forEach(objData => {
+              if(objData.id === tempCurrentData.weather[0].id) return currentImg = objData.img;
+            })
+        })
+
         this.weatherData = dates.slice(1, 4);
         this.currentWeather = {
           data: this.$store.state.weather.currentWeather.data,
           date: dates[0].date,
-          imgPath: dates[0].imgPath,
+          imgPath: currentImg,
         };
       } catch(err) {
         console.log(err);
@@ -236,28 +249,6 @@ export default {
     },
   },
   created() {
-    const weatherDataTemplate = {
-      data: {
-        name: 'name',
-        main: {
-          temp: 'temp',
-          pressure: 'pressure',
-          humidity: 'humidity',
-        },
-      },
-      date: {
-          day: 'day',
-          month: 'month',
-          year: 'year',
-          time: 'time',
-        },
-      }
-
-    this.currentWeather = weatherDataTemplate;
-    for(let i = 0; i < 3; i++) {
-      this.weatherData.push(weatherDataTemplate);
-    }
-
     return this.getLocation();
   },
 };
