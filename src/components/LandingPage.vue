@@ -237,8 +237,8 @@ export default {
     }
     @media (max-width: 600px) {
         .mid-info {
-            justify-content: center;
-            align-items: flex-start;
+            /* justify-content: center; */
+            /* align-items: center; */
             margin: 0;
         }
         .mid-info h1 {
@@ -247,12 +247,42 @@ export default {
         .mid-info h3 {
             font-size: 1rem;
         }
+        .mid-info div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
         .mid-info > * {
             max-width: 100%;
             margin: 0;
         }
         .mid-weather {
+            flex-basis: 30%;
+        }
+        .mid-weather .desc {
+            padding: 1rem;
+            flex-direction: column;
+        }
+        .mid-weather .desc > h2 {
+            font-size: 1.4rem;
+        }
+        .mid-weather .top {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+    @media (max-width: 420px) {
+        .mid-weather {
             display: none;
+        }
+        .mid-info {
+            justify-content: center;
+            align-items: center;
+        }
+    }
+    @media (max-width: 360px) {
+        .mid-info h1 {
+            font-size: 1.5rem;
         }
     }
 </style>

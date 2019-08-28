@@ -1,18 +1,18 @@
 <template>
     <div style="height: 100%;">
         <landing-page />
-        <!-- <forecast /> -->
+        <forecast />
     </div>
 </template>
 
 <script>
 import LandingPage from '../components/LandingPage.vue';
-// import Forecast from '../components/Forecast.vue';
+import Forecast from '../components/Forecast.vue';
 
 export default {
     components: {
         LandingPage,
-        // Forecast
+        Forecast
     },
     data: () => ({
 
