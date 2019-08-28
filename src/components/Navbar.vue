@@ -25,7 +25,7 @@
 
             <v-btn text @click="dialog = true" v-if="getUser === null">
                 <v-icon right class="grey--text">fa-user-circle</v-icon>
-                <span class="mx-2">Sign in</span>
+                <span class="mx-3">Sign in</span>
             </v-btn>
         </v-app-bar>
 

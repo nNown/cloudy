@@ -13,13 +13,8 @@ export default new Router({
     },
     {
       path: '/',
-      name: 'forecast',
-      component: () => import('./views/Forecast.vue'),
-    },
-    {
-      path: '/dashboard',
-      name: 'dashboard',
-      component: () => import('./views/Dashboard.vue'),
-    },
+      name: 'landing',
+      component: () => import('./views/Landing.vue'),
+    }
   ],
 });
